@@ -4,7 +4,7 @@ import {Outlet} from 'react-router-dom';
 import {HTML5Backend} from "react-dnd-html5-backend";
 
 export default function HomePage() {
-    return <DndProvider backend={HTML5Backend}>
+    return <DndProvider backend={HTML5Backend} options={{enableMouseEvents: true}}>
         <Outlet/>
     </DndProvider>
 }

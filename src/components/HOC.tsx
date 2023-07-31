@@ -18,32 +18,29 @@ export const Transition = React.forwardRef(function Transition(
 
 type MainDialogProps = {
     title: string
-    open_keys: string[]
+    open_key: string
     children: React.ReactElement
     defNav?: string
 }
 
 export function MainDialog(props: MainDialogProps) {
-    const {title, open_keys, children, defNav} = props
+    const {title, open_key, children, defNav} = props
     const matches = useMediaQuery((theme: any) => theme.breakpoints.down('md'))
-    const [_, setSearch] = useSearchParams()
     const navigate = useNavigate()
     let location = useLocation()
 
     function handleClose() {
         if (location.key === 'default') {
             navigate(defNav || '/')
-        }
-        else {
-            setSearch('')
-            navigate(-2)
+        } else {
+            navigate(-1)
         }
     }
 
     return (
         <Dialog
             fullScreen={matches}
-            open={open_keys.some(path => location.pathname.includes(path))}
+            open={location.pathname.split('/').includes(open_key)}
             fullWidth
             maxWidth={'sm'}
             onClose={handleClose}
@@ -168,7 +165,7 @@ type FormSelectProps = {
 
 export function FormSelect(props: FormSelectProps) {
     const {fieldName, label, control, searchList, required, multiple, ...rest} = props
-    const defaultValue = required ? searchList[0]?.id : ''
+    const defaultValue = required ? searchList[0]?.id || searchList[0] : ''
 
     return <Controller
         name={fieldName}
@@ -180,7 +177,8 @@ export function FormSelect(props: FormSelectProps) {
                        helperText={invalid && 'Необходимо заполнить'}
                        onChange={onChange} value={value} error={invalid} fullWidth size={'small'}>
                 {!required && <MenuItem value={''}>Все</MenuItem>}
-                {searchList.map(val => <MenuItem key={val.id} value={val.id}>{val.name}</MenuItem>)}
+                {searchList.map(val => <MenuItem key={val.id || val}
+                                                 value={val.id || val}>{val.name || val}</MenuItem>)}
             </TextField>)}
     />
 }

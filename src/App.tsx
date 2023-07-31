@@ -68,17 +68,18 @@ export var defaultNavList: NavItemType[] = [
         component: <WorkDesk/>,
         children: [
             {
-                name: 'field',
-                icon: <div/>,
-                start_path: 'field',
-                path: '/create?/:field_name?/edit?',
-                validate: '',
-                component: <WorkDesk/>
-            }, {
                 name: 'class',
                 icon: <div/>,
                 start_path: 'class',
                 path: '/create?/:class_name?/edit?',
+                validate: '',
+                component: <WorkDesk/>,
+            },
+            {
+                name: 'field',
+                icon: <div/>,
+                start_path: 'field',
+                path: '/:class_name/create?/:field_name?/edit?',
                 validate: '',
                 component: <WorkDesk/>
             },

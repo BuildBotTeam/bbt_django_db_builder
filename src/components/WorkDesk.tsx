@@ -7,10 +7,11 @@ import {DjangoClassCard, DjangoClassForm} from "./DjangoClassCard";
 import {Box, Button, ButtonGroup, Fab} from "@mui/material";
 import {calculatePath} from "../utils";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {DjangoClassType} from "../models/IDjangoModels";
+import {DjangoClassType, Point} from "../models/IDjangoModels";
 import {addClass, updateClass} from "../store/reducers/MainReducer";
 import {useNavigate} from "react-router-dom";
 import {MainDialog} from "./HOC";
+import {ClassFieldsForm} from "./DjangoFields/CharField";
 
 const styles: CSSProperties = {
     width: '100%',
@@ -35,43 +36,31 @@ export default function WorkDesk() {
                 dispatch(updateClass(item))
                 return undefined
             },
-        }),
+        }),[djangoClass]
     )
 
-    // const djangoTest: DjangoClassType[] = [
-    //     {
-    //         class_name: 'Document', pos: {x: 10, y: 10}, fields: [
-    //             {type: "CharField", field_name: 'sad', max_length: 100},
-    //             {type: "CharField", field_name: 'add', max_length: 100},
-    //             {type: "CharField", field_name: 'dss', max_length: 100},
-    //         ]
-    //     }
-    // ]
-
-    // console.log(djangoTest)
-
-    function findConnection({class_name, field_name}: { class_name: string, field_name: string }) {
-        return djangoClass.find(v => v.class_name === class_name)?.fields
-            .find(v => v.field_name === field_name)?.pos
-    }
+    // function findConnection({class_name, field_name}: { class_name: string, field_name: string }) {
+    //     return djangoClass.find(v => v.class_name === class_name)?.fields
+    //         .find(v => v.field_name === field_name)?.ref
+    // }
 
     return (<React.Fragment>
-            {connections.map((val, index) => {
-                const from = findConnection(val.from)
-                const to = findConnection(val.to)
-                console.log(val, from, to)
-                if (!from || !to) return null
-                return <svg key={`con${index}`} className="connections-container">
-                    <g style={{translate: '500ms'}}>
-                        <path
-                            d={calculatePath(from, to)}
-                            fill="transparent"
-                            stroke="rgba(0, 0, 0, 0.5)"
-                            strokeWidth="2"
-                        ></path>
-                    </g>
-                </svg>
-            })}
+            {/*{connections.map((val, index) => {*/}
+            {/*    const from = document.getElementById(val.from)?.getBoundingClientRect() as Point*/}
+            {/*    const to = document.getElementById(val.to)?.getBoundingClientRect() as Point*/}
+            {/*    console.log(from, to)*/}
+            {/*    if (!from || !to) return null*/}
+            {/*    return <svg key={`con${index}`} className="connections-container">*/}
+            {/*        <g style={{translate: '500ms'}}>*/}
+            {/*            <path*/}
+            {/*                d={calculatePath(from, to)}*/}
+            {/*                fill="transparent"*/}
+            {/*                stroke="rgba(0, 0, 0, 0.5)"*/}
+            {/*                strokeWidth="2"*/}
+            {/*            ></path>*/}
+            {/*        </g>*/}
+            {/*    </svg>*/}
+            {/*})}*/}
             <Box ref={drop} sx={styles}>
                 {djangoClass.map((val, i) => <DjangoClassCard key={i} djangoClass={val}/>)}
             </Box>
@@ -80,7 +69,8 @@ export default function WorkDesk() {
                     navigate('class/create')
                 }}>Создать</Button>
             </ButtonGroup>
-            <MainDialog title='Класс' open_keys={['class']}><DjangoClassForm /></MainDialog>
+            <MainDialog title='Класс' open_key={'class'}><DjangoClassForm/></MainDialog>
+            <MainDialog title='Поле' open_key={'field'}><ClassFieldsForm/></MainDialog>
         </React.Fragment>
     )
 }

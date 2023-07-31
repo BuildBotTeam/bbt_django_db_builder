@@ -1,14 +1,17 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ConnectionType, DjangoClassType} from "../../models/IDjangoModels";
+import {ClassFieldsType, ConnectionType, DjangoClassType} from "../../models/IDjangoModels";
+import React from "react";
 
 
 interface IMainSlice {
     djangoClass: DjangoClassType[]
+    djangoFields: ClassFieldsType[]
     connections: ConnectionType[]
 }
 
 const initialState: IMainSlice = {
     djangoClass: [],
+    djangoFields: [],
     connections: []
 }
 
@@ -26,9 +29,15 @@ export const mainSlice = createSlice({
         },
         deleteClass: (state, {payload}: PayloadAction<string>) => {
             state.djangoClass = state.djangoClass.filter(val => val.class_name !== payload)
+        },
+        addField: (state, {payload}) => {
+            state.djangoFields = [...state.djangoFields, payload]
+        },
+        addConnection: (state, {payload}: PayloadAction<any>) => {
+            state.connections.push(payload)
         }
     },
 })
 
-export const {addClass, updateClass, deleteClass} = mainSlice.actions
+export const {addClass, updateClass, deleteClass, addField, addConnection} = mainSlice.actions
 export default mainSlice.reducer
