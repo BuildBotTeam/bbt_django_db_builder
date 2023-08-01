@@ -77,15 +77,8 @@ export default function ClassField(props: ClassFieldProps) {
             const to_field = djangoFields.find(val => val.id === key_id)
             const to_class = djangoClass.find(val => val.class_name === to_field?.parent_class_name)
             if (to_field?.dif_y && to_class && dif_y) {
-                from = {x: parentClass.pos.x + 10, y: parentClass.pos.y + dif_y}
-                to = {x: to_class.pos.x - 10, y: to_class.pos.y + to_field.dif_y}
-                if (from.x + parentClass.width / 2 < to.x) {
-                    from.x = from.x + parentClass.width
-                }
-                if (to.x + to_class.width / 2 < from.x) {
-                    to.x = to.x + to_class.width + 20
-                    from.x -= 20
-                }
+                from = {...parentClass.pos, x: parentClass.pos.x + 10, y: parentClass.pos.y + dif_y}
+                to = {...to_class.pos, x: to_class.pos.x - 10, y: to_class.pos.y + to_field.dif_y}
             }
             return <div ref={drag}
                         style={{opacity: isDragging ? 0.2 : 1}}>
@@ -113,7 +106,7 @@ export default function ClassField(props: ClassFieldProps) {
             <Typography>{field_name}</Typography>
             <Typography>{type}</Typography>
         </Box>
-    }, [field, refBody, djangoClass])
+    }, [field, refBody, djangoClass, djangoFields])
 
     return <Box ref={refBody}>
         {body}

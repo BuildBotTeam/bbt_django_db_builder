@@ -1,8 +1,8 @@
-import React from "react";
-
 export type Point = {
     x: number
     y: number
+    width: number
+    height: number
 }
 
 export type ConnectionType = {
@@ -14,7 +14,6 @@ export type DjangoClassType = {
     class_name: string
     pos: Point
     meta?: ClassMetaType
-    width: number
 }
 
 export const ClassFieldTypeList = ['ForeignField', 'CharField', 'TextField', 'ForeignKey']

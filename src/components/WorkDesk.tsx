@@ -21,10 +21,9 @@ const styles: CSSProperties = {
 }
 
 export default function WorkDesk() {
-    const {djangoClass, connections} = useAppSelector(state => state.mainReducer)
+    const {djangoClass} = useAppSelector(state => state.mainReducer)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    const ref = useRef<HTMLDivElement | null>(null)
 
     const [_, drop] = useDrop(
         () => ({
@@ -33,7 +32,7 @@ export default function WorkDesk() {
                 const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
                 const x = Math.round(item.pos.x + delta.x)
                 const y = Math.round(item.pos.y + delta.y)
-                item.pos = {x, y}
+                item.pos = {...item.pos, x, y}
                 dispatch(updateClass(item))
                 return undefined
             }

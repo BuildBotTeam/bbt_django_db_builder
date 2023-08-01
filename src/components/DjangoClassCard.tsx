@@ -24,8 +24,7 @@ export function DjangoClassForm(props: DjangoClassFormProps) {
     function onSubmit(values: any) {
         dispatch(addClass({
             class_name: values.class_name,
-            pos: {x: 10, y: 10},
-            width: 400
+            pos: {x: 10, y: 10, width: 300, height: 0},
         }))
         handleClose!()
     }
@@ -49,6 +48,16 @@ export function DjangoClassCard(props: BoxProps) {
     const dispatch = useAppDispatch()
     const {djangoFields} = useAppSelector(state => state.mainReducer)
     const navigate = useNavigate()
+    const ref = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        if (ref.current) {
+            const newClass = {...djangoClass}
+            newClass.pos = {...djangoClass.pos}
+            newClass.pos.height = ref.current?.clientHeight
+            dispatch(updateClass({...newClass}))
+        }
+    }, [djangoFields])
 
     const [{isDragging}, drag, preview] = useDrag(
         () => ({
@@ -80,9 +89,9 @@ export function DjangoClassCard(props: BoxProps) {
 
     return (
         <div ref={preview}
-             style={{position: 'absolute', left: pos.x, top: pos.y, opacity: isDragging ? 0.2 : 1}}>
+             style={{position: 'absolute', left: pos.x, top: pos.y, opacity: isDragging ? 0.9 : 1}}>
             <div ref={drop}>
-                <Card sx={{width: djangoClass.width, bgcolor: 'rgba(255,0,0,0.2)'}}>
+                <Card ref={ref} sx={{width: djangoClass.pos.width, bgcolor: 'rgba(255,0,0,0.2)'}}>
                     <div ref={drag}>
                         <CardHeader action={<DragIndicatorIcon/>} title={class_name} sx={{cursor: 'grab'}}/>
                     </div>

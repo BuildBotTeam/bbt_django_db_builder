@@ -12,6 +12,21 @@ export function calculatePath(start: Point, end: Point) {
         x: (start.x + end.x) / 2,
         y: (start.y + end.y) / 2,
     }
+    const border = 20
+
+    if (start.x + start.width + border < end.x) {
+        start.x += start.width
+        center.x += start.width / 2
+        console.log(1)
+    } else if (start.x > end.x + end.width + border) {
+        console.log(3)
+    } else if (start.x > end.x || end.x + end.width > start.x + start.width) {
+        start.x -= 20
+        center.x -= start.width / 2
+        center.y = 400
+        // start.x += start.width
+        console.log(start.height, end.height, center)
+    }
 
     let controlPoint = {
         x: start.x + Math.min(
@@ -21,6 +36,7 @@ export function calculatePath(start: Point, end: Point) {
         ) * (end.x - start.x) / Math.abs(start.x - end.x),
         y: start.y,
     };
+
 
     return `
       M ${Math.round(start.x)},${Math.round(start.y)} 
