@@ -39,11 +39,6 @@ export default function WorkDesk() {
         }), [djangoClass]
     )
 
-    // function findConnection({class_name, field_name}: { class_name: string, field_name: string }) {
-    //     return djangoClass.find(v => v.class_name === class_name)?.fields
-    //         .find(v => v.field_name === field_name)?.ref
-    // }
-
     const body = useMemo(() => djangoClass.map((val, i) => <DjangoClassCard key={i} djangoClass={val}/>), [djangoClass])
 
     return (<React.Fragment>

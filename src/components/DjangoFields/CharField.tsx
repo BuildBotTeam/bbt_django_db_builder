@@ -80,10 +80,9 @@ export default function ClassField(props: ClassFieldProps) {
                 from = {...parentClass.pos, x: parentClass.pos.x + 10, y: parentClass.pos.y + dif_y}
                 to = {...to_class.pos, x: to_class.pos.x - 10, y: to_class.pos.y + to_field.dif_y}
             }
-            return <div ref={drag}
-                        style={{opacity: isDragging ? 0.2 : 1}}>
-                {from && to && <svg key={`con${parent_class_name + field_name}`} className="connections-container">
-                    <g style={{translate: '500ms'}}>
+            return <React.Fragment>
+                {from && to && <svg className="connections-container">
+                    <g>
                         <path
                             d={calculatePath(from, to)}
                             fill="transparent"
@@ -92,14 +91,16 @@ export default function ClassField(props: ClassFieldProps) {
                         ></path>
                     </g>
                 </svg>}
-                <Box sx={{display: 'flex', gap: 5, justifyContent: 'space-between'}}>
-                    <Typography>{field_name}</Typography>
-                    <Stack direction={'row'}>
-                        <Typography>{type}</Typography>
-                        <DragIndicatorIcon/>
-                    </Stack>
-                </Box>
-            </div>
+                <div ref={drag}>
+                    <Box sx={{display: 'flex', gap: 5, justifyContent: 'space-between'}}>
+                        <Typography>{field_name}</Typography>
+                        <Stack direction={'row'}>
+                            <Typography>{type}</Typography>
+                            <DragIndicatorIcon/>
+                        </Stack>
+                    </Box>
+                </div>
+            </React.Fragment>
         }
 
         return <Box sx={{display: 'flex', gap: 5, justifyContent: 'space-between'}}>

@@ -89,9 +89,9 @@ export function DjangoClassCard(props: BoxProps) {
 
     return (
         <div ref={preview}
-             style={{position: 'absolute', left: pos.x, top: pos.y, opacity: isDragging ? 0.9 : 1}}>
+             style={{position: 'absolute', left: pos.x, top: pos.y, opacity: isDragging ? 0 : 1}}>
             <div ref={drop}>
-                <Card ref={ref} sx={{width: djangoClass.pos.width, bgcolor: 'rgba(255,0,0,0.2)'}}>
+                <Card ref={ref} sx={{width: djangoClass.pos.width, bgcolor: 'rgba(255,0,0,1)'}}>
                     <div ref={drag}>
                         <CardHeader action={<DragIndicatorIcon/>} title={class_name} sx={{cursor: 'grab'}}/>
                     </div>
