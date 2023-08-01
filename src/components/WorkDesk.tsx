@@ -1,6 +1,6 @@
 import update from 'immutability-helper'
 import type {CSSProperties} from 'react'
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import type {XYCoord} from 'react-dnd'
 import {useDrop} from 'react-dnd'
 import {DjangoClassCard, DjangoClassForm} from "./DjangoClassCard";
@@ -24,6 +24,7 @@ export default function WorkDesk() {
     const {djangoClass, connections} = useAppSelector(state => state.mainReducer)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const ref = useRef<HTMLDivElement | null>(null)
 
     const [_, drop] = useDrop(
         () => ({
@@ -35,8 +36,8 @@ export default function WorkDesk() {
                 item.pos = {x, y}
                 dispatch(updateClass(item))
                 return undefined
-            },
-        }),[djangoClass]
+            }
+        }), [djangoClass]
     )
 
     // function findConnection({class_name, field_name}: { class_name: string, field_name: string }) {
@@ -44,25 +45,11 @@ export default function WorkDesk() {
     //         .find(v => v.field_name === field_name)?.ref
     // }
 
+    const body = useMemo(() => djangoClass.map((val, i) => <DjangoClassCard key={i} djangoClass={val}/>), [djangoClass])
+
     return (<React.Fragment>
-            {/*{connections.map((val, index) => {*/}
-            {/*    const from = document.getElementById(val.from)?.getBoundingClientRect() as Point*/}
-            {/*    const to = document.getElementById(val.to)?.getBoundingClientRect() as Point*/}
-            {/*    console.log(from, to)*/}
-            {/*    if (!from || !to) return null*/}
-            {/*    return <svg key={`con${index}`} className="connections-container">*/}
-            {/*        <g style={{translate: '500ms'}}>*/}
-            {/*            <path*/}
-            {/*                d={calculatePath(from, to)}*/}
-            {/*                fill="transparent"*/}
-            {/*                stroke="rgba(0, 0, 0, 0.5)"*/}
-            {/*                strokeWidth="2"*/}
-            {/*            ></path>*/}
-            {/*        </g>*/}
-            {/*    </svg>*/}
-            {/*})}*/}
             <Box ref={drop} sx={styles}>
-                {djangoClass.map((val, i) => <DjangoClassCard key={i} djangoClass={val}/>)}
+                {body}
             </Box>
             <ButtonGroup sx={{position: 'fixed', bottom: 10, left: '50%', transform: 'translateX(-50%)'}}>
                 <Button onClick={() => {

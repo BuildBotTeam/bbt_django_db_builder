@@ -33,11 +33,27 @@ export const mainSlice = createSlice({
         addField: (state, {payload}) => {
             state.djangoFields = [...state.djangoFields, payload]
         },
+        updateField: (state, {payload}: PayloadAction<ClassFieldsType>) => {
+            state.djangoFields = [...state.djangoFields.map(val => {
+                if (val.id === payload.id) {
+                    return {...payload}
+                }
+                return val
+            })]
+        },
         addConnection: (state, {payload}: PayloadAction<any>) => {
-            state.connections.push(payload)
+            if (!state.djangoFields.some(val => val.id === payload.newField.id)) {
+                state.djangoFields = state.djangoFields.map(val => {
+                    if (val.id === payload.parent_id) {
+                        val.key_id = payload.newField.id
+                    }
+                    return val
+                })
+                state.djangoFields = [...state.djangoFields, payload.newField]
+            }
         }
     },
 })
 
-export const {addClass, updateClass, deleteClass, addField, addConnection} = mainSlice.actions
+export const {addClass, updateClass, deleteClass, addField, updateField, addConnection} = mainSlice.actions
 export default mainSlice.reducer
