@@ -27,19 +27,20 @@ export function calculatePath(in_start: Point, in_end: Point) {
         y: (start.y + end.y) / 2,
     }
 
+
+
     if (start.x + start.width < end.x) {
         start.x += start.width
         center.x += start.width / 2
-
-    } else if (start.x > end.x + end.width + 40) {
+    } else if (start.x > end.x + end.width) {
         end.x += end.width
-        center.x += start.width / 2
-    } else if (start.x > end.x || end.x + end.width > start.x + start.width) {
+        center.x += end.width / 2
+    } else {
         center.x -= (start.width / 2) + Math.abs(start.x - end.x) * 0.5
         center.y -= (start.x - end.x) * 0.25 * (end.y - start.y) / Math.abs(start.y - end.y)
         return `
       M ${Math.round(start.x)},${Math.round(start.y)} 
-      Q ${Math.round(center.x )}, ${Math.round(center.y)} ${Math.round(end.x)},${Math.round(end.y)} 
+      Q ${Math.round(center.x)}, ${Math.round(center.y)} ${Math.round(end.x)},${Math.round(end.y)} 
     `;
     }
     const controlPoint = getControlPoint(start, end)
@@ -49,3 +50,7 @@ export function calculatePath(in_start: Point, in_end: Point) {
       T ${Math.round(end.x)},${Math.round(end.y)}
     `;
 }
+
+export function capFirstLetter(str: string){
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }

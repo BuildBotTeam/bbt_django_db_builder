@@ -28,13 +28,15 @@ export type DjangoClassType = {
 export const ClassFieldTypeList = ['ForeignField', 'CharField', 'TextField', 'ForeignKey']
 
 export type ClassFieldsType = {
-    id: string
+    id: number
     parent_class_name: string
     type: 'ForeignField' | 'CharField' | 'TextField' | 'ForeignKey'
     field_name: string
     related_name?: string
     dif_y?: number
     class_name?: string
+    key_id?: number
+    field_id?: number
     max_length?: number
     on_delete?: string
     verbose_name?: string
