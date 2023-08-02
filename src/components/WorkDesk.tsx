@@ -14,14 +14,14 @@ import {MainDialog} from "./HOC";
 import {ClassFieldsForm} from "./DjangoFields/CharField";
 
 const styles: CSSProperties = {
-    width: '100%',
+    width: '100vw',
     height: '100vh',
     border: '1px solid black',
     position: 'relative',
 }
 
 export default function WorkDesk() {
-    const {djangoClass} = useAppSelector(state => state.mainReducer)
+    const {djangoClass, djangoFields} = useAppSelector(state => state.mainReducer)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
@@ -41,7 +41,38 @@ export default function WorkDesk() {
 
     const body = useMemo(() => djangoClass.map((val, i) => <DjangoClassCard key={i} djangoClass={val}/>), [djangoClass])
 
+    const connections = useMemo(() => {
+        const con: any[] = []
+        djangoFields.filter(val => val.type === 'ForeignField').forEach(field => {
+            const from_class = djangoClass.find(val => val.class_name === field.parent_class_name)
+            if (from_class?.pos && field.dif_y) {
+                const from = {...from_class.pos, y: from_class.pos.y + field.dif_y}
+                djangoFields.filter(val => val.type === 'ForeignKey').map((key, i) => {
+                    if (key.field_name === (field.related_name || field.field_name + '_set')) {
+                        const to_class = djangoClass.find(val => val.class_name === key.parent_class_name)
+                        if (to_class?.pos && key.dif_y) {
+                            const to = {...to_class.pos, y: to_class.pos.y + key.dif_y}
+                            const path = calculatePath(from, to)
+                            con.push(<svg key={i} className="connections-container">
+                                <path
+                                    d={path}
+                                    fill="transparent"
+                                    stroke="rgba(0, 0, 0, 0.5)"
+                                    strokeWidth="2"
+                                ></path>
+                            </svg>)
+                        }
+                    }
+                    return null
+                })
+            }
+
+        })
+        return con
+    }, [djangoClass, djangoFields])
+
     return (<React.Fragment>
+            {connections}
             <Box ref={drop} sx={styles}>
                 {body}
             </Box>

@@ -46,18 +46,15 @@ type ClassFieldProps = {
 
 export default function ClassField(props: ClassFieldProps) {
     const {field, parentClass} = props
-    const {id, type, class_name, field_name, key_id, dif_y, on_delete, tnull, blank, parent_class_name} = field
+    const {type, class_name, field_name, related_name, dif_y, on_delete, tnull, blank, parent_class_name} = field
     const {djangoFields, djangoClass} = useAppSelector(state => state.mainReducer)
     const dispatch = useAppDispatch()
     const refBody = useRef<HTMLDivElement | null>(null)
 
-    const [{isDragging}, drag] = useDrag(
+    const [_, drag] = useDrag(
         () => ({
             type: 'item',
-            item: {field_name, parent_class_name, id},
-            collect: (monitor) => ({
-                isDragging: monitor.isDragging(),
-            }),
+            item: {field_name, parent_class_name},
         }),
         [parent_class_name, field_name],
     )
@@ -71,45 +68,24 @@ export default function ClassField(props: ClassFieldProps) {
 
     const body = useMemo(() => {
         if (type === 'ForeignField') {
-            let to = null
-            let from = null
-
-            const to_field = djangoFields.find(val => val.id === key_id)
-            const to_class = djangoClass.find(val => val.class_name === to_field?.parent_class_name)
-            if (to_field?.dif_y && to_class && dif_y) {
-                from = {...parentClass.pos, x: parentClass.pos.x + 10, y: parentClass.pos.y + dif_y}
-                to = {...to_class.pos, x: to_class.pos.x - 10, y: to_class.pos.y + to_field.dif_y}
-            }
             return <React.Fragment>
-                {from && to && <svg className="connections-container">
-                    <g>
-                        <path
-                            d={calculatePath(from, to)}
-                            fill="transparent"
-                            stroke="rgba(0, 0, 0, 0.5)"
-                            strokeWidth="2"
-                        ></path>
-                    </g>
-                </svg>}
-                <div ref={drag}>
-                    <Box sx={{display: 'flex', gap: 5, justifyContent: 'space-between'}}>
-                        <Typography>{field_name}</Typography>
-                        <Stack direction={'row'}>
-                            <Typography>{type}</Typography>
-                            <DragIndicatorIcon/>
-                        </Stack>
-                    </Box>
-                </div>
+                <Typography>{field_name}</Typography>
+                <Stack direction={'row'}>
+                    <Typography>{type}</Typography>
+                    <div ref={drag} style={{cursor: 'grab'}}>
+                        <DragIndicatorIcon/>
+                    </div>
+                </Stack>
             </React.Fragment>
         }
 
-        return <Box sx={{display: 'flex', gap: 5, justifyContent: 'space-between'}}>
+        return <React.Fragment>
             <Typography>{field_name}</Typography>
             <Typography>{type}</Typography>
-        </Box>
+        </React.Fragment>
     }, [field, refBody, djangoClass, djangoFields])
 
-    return <Box ref={refBody}>
+    return <Box sx={{display: 'flex', gap: 5, justifyContent: 'space-between'}} ref={refBody}>
         {body}
     </Box>
 }

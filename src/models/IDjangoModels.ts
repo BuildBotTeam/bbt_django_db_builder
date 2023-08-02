@@ -5,9 +5,17 @@ export type Point = {
     height: number
 }
 
+export type ConnectionItem = {
+    class_name: string
+    field_name: string
+    pos: Point
+    dif_y: number
+}
+
 export type ConnectionType = {
-    from: string
-    to: string
+    id: string
+    from: ConnectionItem
+    to: ConnectionItem
 }
 
 export type DjangoClassType = {
@@ -22,8 +30,7 @@ export type ClassFieldsType = {
     parent_class_name: string
     type: 'ForeignField' | 'CharField' | 'TextField' | 'ForeignKey'
     field_name: string
-    id: string
-    key_id?: string
+    related_name?: string
     dif_y?: number
     class_name?: string
     max_length?: number
@@ -31,6 +38,12 @@ export type ClassFieldsType = {
     verbose_name?: string
     blank?: boolean
     tnull?: boolean
+}
+
+export type FieldKeyType = {
+    parent_class_name: string
+    key_name: string
+    dif_y?: number
 }
 
 export type ClassMetaType = {

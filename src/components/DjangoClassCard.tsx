@@ -79,9 +79,8 @@ export function DjangoClassCard(props: BoxProps) {
                         parent_class_name: class_name,
                         type: 'ForeignKey',
                         field_name: `${item.field_name}_set`,
-                        id: `${item.parent_class_name}_${item.field_name}_set`
                     }
-                    dispatch(addConnection({parent_id: item.id, newField}))
+                    dispatch(addConnection(newField))
                 }
                 return undefined
             },

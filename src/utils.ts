@@ -7,54 +7,49 @@ function distance(start: Point, end: Point) {
     return Math.sqrt(dx * dx + dy * dy)
 }
 
-export function calculatePath(start: Point, end: Point) {
+function getControlPoint(start: Point, end: Point) {
+    return {
+        x: start.x + Math.min(
+            distance(start, end),
+            Math.abs(end.y - start.y) / 2,
+            20
+        ) * (end.x - start.x) / Math.abs(start.x - end.x),
+        y: start.y,
+    }
+}
+
+export function calculatePath(in_start: Point, in_end: Point) {
+    const start = {...in_start}
+    const end = {...in_end}
+
     const center = {
         x: (start.x + end.x) / 2,
         y: (start.y + end.y) / 2,
     }
 
     if (start.x + start.width < end.x) {
-        start.x += start.width
+        start.x += start.width + 10
+        end.x -= 10
         center.x += start.width / 2
-        let controlPoint = {
-            x: start.x + Math.min(
-                distance(start, end),
-                Math.abs(end.y - start.y) / 2,
-                20
-            ) * (end.x - start.x) / Math.abs(start.x - end.x),
-            y: start.y,
-        };
-        console.log(1)
-        return `
-      M ${Math.round(start.x)},${Math.round(start.y)} 
-      Q ${Math.round(controlPoint.x)}, ${Math.round(controlPoint.y)} ${Math.round(center.x)},${Math.round(center.y)} 
-      T ${Math.round(end.x)},${Math.round(end.y)}
-    `;
-    } else if (start.x > end.x + end.width) {
-        end.x += end.width + 20
-        start.x -= 20
+
+    } else if (start.x > end.x + end.width + 40) {
+        end.x += end.width + 10
+        start.x -= 10
         center.x += start.width / 2
-        console.log(2)
-         let controlPoint = {
-            x: start.x + Math.min(
-                distance(start, end),
-                Math.abs(end.y - start.y) / 2,
-                20
-            ) * (end.x - start.x) / Math.abs(start.x - end.x),
-            y: start.y,
-        };
-        return `
-      M ${Math.round(start.x)},${Math.round(start.y)} 
-      Q ${Math.round(controlPoint.x)}, ${Math.round(controlPoint.y)} ${Math.round(center.x)},${Math.round(center.y)} 
-      T ${Math.round(end.x)},${Math.round(end.y)}
-    `;
     } else if (start.x > end.x || end.x + end.width > start.x + start.width) {
-        start.x -= 20
-        center.x -= start.width / 2
-        console.log(3,Math.abs( start.y - end.y) * 0.5)
+        start.x -= 10
+        end.x -= 10
+        center.x -= (start.width / 2) + Math.abs(start.x - end.x) * 0.5
+        center.y -= (start.x - end.x) * 0.25 * (end.y - start.y) / Math.abs(start.y - end.y)
         return `
       M ${Math.round(start.x)},${Math.round(start.y)} 
-      Q ${Math.round(center.x * 0.5)}, ${Math.round(center.y + Math.abs(start.y - end.y) * 0.25)} ${Math.round(end.x)},${Math.round(end.y)} 
+      Q ${Math.round(center.x )}, ${Math.round(center.y)} ${Math.round(end.x)},${Math.round(end.y)} 
     `;
     }
+    const controlPoint = getControlPoint(start, end)
+    return `
+      M ${Math.round(start.x)},${Math.round(start.y)} 
+      Q ${Math.round(controlPoint.x)}, ${Math.round(controlPoint.y)} ${Math.round(center.x)},${Math.round(center.y)} 
+      T ${Math.round(end.x)},${Math.round(end.y)}
+    `;
 }

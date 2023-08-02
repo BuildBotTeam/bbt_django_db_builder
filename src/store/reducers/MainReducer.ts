@@ -1,6 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ClassFieldsType, ConnectionType, DjangoClassType} from "../../models/IDjangoModels";
-import React from "react";
+import {ClassFieldsType, ConnectionType, DjangoClassType, FieldKeyType} from "../../models/IDjangoModels";
 
 
 interface IMainSlice {
@@ -35,25 +34,26 @@ export const mainSlice = createSlice({
         },
         updateField: (state, {payload}: PayloadAction<ClassFieldsType>) => {
             state.djangoFields = [...state.djangoFields.map(val => {
-                if (val.id === payload.id) {
+                if (val.parent_class_name === payload.parent_class_name && val.field_name === payload.field_name) {
                     return {...payload}
                 }
                 return val
             })]
         },
-        addConnection: (state, {payload}: PayloadAction<any>) => {
-            if (!state.djangoFields.some(val => val.id === payload.newField.id)) {
-                state.djangoFields = state.djangoFields.map(val => {
-                    if (val.id === payload.parent_id) {
-                        val.key_id = payload.newField.id
-                    }
-                    return val
-                })
-                state.djangoFields = [...state.djangoFields, payload.newField]
+        addConnection: (state, {payload}: PayloadAction<ClassFieldsType>) => {
+            if (!state.djangoFields.some(val => val.class_name === payload.parent_class_name && val.field_name === payload.field_name)) {
+                state.djangoFields = [...state.djangoFields, payload]
             }
-        }
+        },
     },
 })
 
-export const {addClass, updateClass, deleteClass, addField, updateField, addConnection} = mainSlice.actions
+export const {
+    addClass,
+    updateClass,
+    deleteClass,
+    addField,
+    updateField,
+    addConnection,
+} = mainSlice.actions
 export default mainSlice.reducer
