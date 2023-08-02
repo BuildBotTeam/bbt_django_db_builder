@@ -28,17 +28,13 @@ export function calculatePath(in_start: Point, in_end: Point) {
     }
 
     if (start.x + start.width < end.x) {
-        start.x += start.width + 10
-        end.x -= 10
+        start.x += start.width
         center.x += start.width / 2
 
     } else if (start.x > end.x + end.width + 40) {
-        end.x += end.width + 10
-        start.x -= 10
+        end.x += end.width
         center.x += start.width / 2
     } else if (start.x > end.x || end.x + end.width > start.x + start.width) {
-        start.x -= 10
-        end.x -= 10
         center.x -= (start.width / 2) + Math.abs(start.x - end.x) * 0.5
         center.y -= (start.x - end.x) * 0.25 * (end.y - start.y) / Math.abs(start.y - end.y)
         return `

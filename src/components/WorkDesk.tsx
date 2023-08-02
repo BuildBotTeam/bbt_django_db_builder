@@ -28,14 +28,23 @@ export default function WorkDesk() {
     const [_, drop] = useDrop(
         () => ({
             accept: 'card',
-            drop(item: DjangoClassType, monitor) {
+            hover(item: DjangoClassType, monitor) {
+                const newItem = {...item}
                 const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
                 const x = Math.round(item.pos.x + delta.x)
                 const y = Math.round(item.pos.y + delta.y)
-                item.pos = {...item.pos, x, y}
-                dispatch(updateClass(item))
+                newItem.pos = {...item.pos, x, y}
+                dispatch(updateClass(newItem))
                 return undefined
-            }
+            },
+            // drop(item: DjangoClassType, monitor) {
+            //     const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
+            //     const x = Math.round(item.pos.x + delta.x)
+            //     const y = Math.round(item.pos.y + delta.y)
+            //     item.pos = {...item.pos, x, y}
+            //     dispatch(updateClass(item))
+            //     return undefined
+            // }
         }), [djangoClass]
     )
 

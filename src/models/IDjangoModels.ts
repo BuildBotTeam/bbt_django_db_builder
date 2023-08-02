@@ -22,11 +22,13 @@ export type DjangoClassType = {
     class_name: string
     pos: Point
     meta?: ClassMetaType
+    color: string
 }
 
 export const ClassFieldTypeList = ['ForeignField', 'CharField', 'TextField', 'ForeignKey']
 
 export type ClassFieldsType = {
+    id: string
     parent_class_name: string
     type: 'ForeignField' | 'CharField' | 'TextField' | 'ForeignKey'
     field_name: string
@@ -38,12 +40,6 @@ export type ClassFieldsType = {
     verbose_name?: string
     blank?: boolean
     tnull?: boolean
-}
-
-export type FieldKeyType = {
-    parent_class_name: string
-    key_name: string
-    dif_y?: number
 }
 
 export type ClassMetaType = {
