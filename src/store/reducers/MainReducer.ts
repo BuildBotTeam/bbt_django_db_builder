@@ -76,15 +76,12 @@ export const mainSlice = createSlice({
         addConnection: (state, {
             payload: {field, key}
         }: PayloadAction<{ field: ClassFieldsType, key: ClassFieldsType }>) => {
-            console.clear()
+            if (state.djangoFields.some(val => val.parent_class_name === key.parent_class_name && val.field_name === key.field_name)) return
             if (field.key_id) {
-                console.log('1',field, key)
                 state.djangoFields = state.djangoFields.map(val => val.id === field.key_id ? key : val)
-            } else if (!state.djangoFields.some(val => val.parent_class_name === key.parent_class_name && val.field_name === key.field_name)) {
-                console.log('2',field, key)
-                console.log(state.djangoFields.some(val => val.parent_class_name === key.parent_class_name && val.field_name === key.field_name))
+            } else {
                 state.djangoFields = [...state.djangoFields, key]
-            } else return
+            }
             state.djangoFields = state.djangoFields.map(val => {
                 if (val.id === field.id) return {...field, class_name: key.class_name, key_id: key.id}
                 return val
