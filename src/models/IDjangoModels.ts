@@ -25,12 +25,13 @@ export type DjangoClassType = {
     color: string
 }
 
-export const ClassFieldTypeList = ['ForeignField', 'CharField', 'TextField', 'ForeignKey']
+export const ClassFieldTypeList = ['key', 'CharField', 'TextField', 'ForeignKey', 'ManyToManyField', 'OneToOneField',
+    'IntegerField', 'FileField', 'FloatField', 'DateTimeField', 'DateField', 'BooleanField'] as const
 
-export type ClassFieldsType = {
-    id: number
-    parent_class_name: string
-    type: 'ForeignField' | 'CharField' | 'TextField' | 'ForeignKey'
+export type DjangoFieldType = {
+    id?: number
+    parent_class_name?: string
+    type: typeof ClassFieldTypeList[number]
     field_name: string
     related_name?: string
     dif_y?: number
@@ -42,6 +43,7 @@ export type ClassFieldsType = {
     verbose_name?: string
     blank?: boolean
     tnull?: boolean
+    tdefault?: string
 }
 
 export type ClassMetaType = {

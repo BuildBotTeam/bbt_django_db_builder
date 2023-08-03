@@ -1,10 +1,10 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ClassFieldsType, ConnectionType, DjangoClassType} from "../../models/IDjangoModels";
+import {DjangoFieldType, ConnectionType, DjangoClassType} from "../../models/IDjangoModels";
 
 
 interface IMainSlice {
     djangoClass: DjangoClassType[]
-    djangoFields: ClassFieldsType[]
+    djangoFields: DjangoFieldType[]
     connections: ConnectionType[]
 }
 
@@ -28,15 +28,18 @@ export const mainSlice = createSlice({
         },
         deleteClass: (state, {payload}: PayloadAction<string>) => {
             state.djangoClass = state.djangoClass.filter(val => val.class_name !== payload)
-            let keys: string[] = []
-            state.djangoFields.filter(val => val.parent_class_name === payload && val.type === 'ForeignField').forEach(val => {
-                state.djangoFields.forEach((v) => {
-                    if (v.field_name === (val.related_name || val.field_name + '_set')) {
-                        keys.push(v.field_name)
-                    }
-                })
+            let indexes: number[] = []
+            state.djangoFields.filter(val => val.parent_class_name === payload).forEach(val => {
+                if (['ForeignKey'].includes(val.type)) indexes.push(state.djangoFields.findIndex(v => v.id === val.key_id))
+                if (['key'].includes(val.type)) {
+                    state.djangoFields = state.djangoFields.map(v => v.id === val.field_id ? {
+                        ...v,
+                        key_id: undefined,
+                        class_name: undefined
+                    } : v)
+                }
             })
-            state.djangoFields = state.djangoFields.filter(val => val.parent_class_name !== payload && !keys.includes(val.field_name))
+            state.djangoFields = state.djangoFields.filter((val, i) => val.parent_class_name !== payload && !indexes.includes(i))
         },
         changeClassName: (state, {payload}) => {
             if (!state.djangoClass.some(val => payload.new_class_name === val.class_name)) {
@@ -50,12 +53,12 @@ export const mainSlice = createSlice({
                 })
             }
         },
-        addField: (state, {payload}: PayloadAction<ClassFieldsType>) => {
+        addField: (state, {payload}: PayloadAction<DjangoFieldType>) => {
             if (!state.djangoFields.some(val => val.parent_class_name === payload.parent_class_name && val.field_name === payload.field_name)) {
                 state.djangoFields = [...state.djangoFields, payload]
             }
         },
-        updateField: (state, {payload}: PayloadAction<ClassFieldsType>) => {
+        updateField: (state, {payload}: PayloadAction<DjangoFieldType>) => {
             state.djangoFields = state.djangoFields.map(val => {
                 if (val.id === payload.id) {
                     return {...payload}
@@ -63,7 +66,7 @@ export const mainSlice = createSlice({
                 return val
             })
         },
-        deleteField: (state, {payload}: PayloadAction<ClassFieldsType>) => {
+        deleteField: (state, {payload}: PayloadAction<DjangoFieldType>) => {
             if (payload.field_id) {
                 state.djangoFields = state.djangoFields.map(val => val.id === payload.field_id ? {
                     ...val,
@@ -75,7 +78,7 @@ export const mainSlice = createSlice({
         },
         addConnection: (state, {
             payload: {field, key}
-        }: PayloadAction<{ field: ClassFieldsType, key: ClassFieldsType }>) => {
+        }: PayloadAction<{ field: DjangoFieldType, key: DjangoFieldType }>) => {
             if (state.djangoFields.some(val => val.parent_class_name === key.parent_class_name && val.field_name === key.field_name)) return
             if (field.key_id) {
                 state.djangoFields = state.djangoFields.map(val => val.id === field.key_id ? key : val)

@@ -1,12 +1,12 @@
 import {Box, Button, IconButton, Stack, Typography} from '@mui/material';
 import React, {useEffect, useMemo, useRef} from 'react';
 import {useDrag} from "react-dnd";
-import {ClassFieldsType, ClassFieldTypeList, DjangoClassType, Point} from "../models/IDjangoModels";
+import {DjangoFieldType, ClassFieldTypeList, DjangoClassType, Point} from "../models/IDjangoModels";
 import {useForm} from "react-hook-form";
 import {addField, deleteField, updateField} from "../store/reducers/MainReducer";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useParams} from "react-router-dom";
-import {FormSelect, FormTextField} from "./HOC";
+import {FormAutocompleteSelect, FormSelect, FormTextField} from "./HOC";
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -33,7 +33,8 @@ export function ClassFieldsForm(props: ClassFieldsFormProps) {
 
     return <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={1} sx={{pt: 1}}>
-            <FormSelect fieldName={'type'} label={'Тип'} control={control} searchList={ClassFieldTypeList} required/>
+            <FormAutocompleteSelect fieldName={'type'} label={'Тип'} control={control}
+                                    searchList={[...ClassFieldTypeList]} required/>
             <FormTextField fieldName={'field_name'} label={'Название'} control={control} required
                            inputProps={{pattern: "[A-Za-z_]*$"}}/>
             <Button type={'submit'} variant={'contained'}>Создать</Button>
@@ -42,7 +43,7 @@ export function ClassFieldsForm(props: ClassFieldsFormProps) {
 }
 
 type ClassFieldProps = {
-    field: ClassFieldsType
+    field: DjangoFieldType
     parentClass: DjangoClassType
 }
 
@@ -65,7 +66,7 @@ export default function ClassField(props: ClassFieldProps) {
     const dispatch = useAppDispatch()
     const refBody = useRef<HTMLDivElement | null>(null)
 
-    const [_, drag] = useDrag(
+    const [, drag] = useDrag(
         () => ({
             type: 'item',
             item: field,
@@ -81,7 +82,7 @@ export default function ClassField(props: ClassFieldProps) {
     }, [field, djangoClass])
 
     const connect = useMemo(() => {
-        if (type === 'ForeignField') {
+        if (type === 'ForeignKey') {
             return <div ref={drag} style={{cursor: 'grab'}}>
                 {key_id ? <RadioButtonCheckedIcon sx={{fontSize: 16}}/> :
                     <RadioButtonUncheckedIcon sx={{fontSize: 16}}/>}

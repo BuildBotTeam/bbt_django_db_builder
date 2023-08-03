@@ -11,6 +11,7 @@ import {updateClass} from "../store/reducers/MainReducer";
 import {useNavigate} from "react-router-dom";
 import {MainDialog} from "./HOC";
 import {ClassFieldsForm} from "./CharField";
+import {djangoBuilder, genCharField} from "../services/DjangoBuilder";
 
 const styles: CSSProperties = {
     width: '100vw',
@@ -23,19 +24,11 @@ export default function WorkDesk() {
     const {djangoClass, djangoFields} = useAppSelector(state => state.mainReducer)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    // console.log(genCharField({field_name: 'test', max_length: 20, type: "CharField"}))
 
-    const [_, drop] = useDrop(
+    const [, drop] = useDrop(
         () => ({
             accept: 'card',
-            // hover(item: DjangoClassType, monitor) {
-            //     const newItem = {...item}
-            //     const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
-            //     const x = Math.round(item.pos.x + delta.x)
-            //     const y = Math.round(item.pos.y + delta.y)
-            //     newItem.pos = {...item.pos, x, y}
-            //     dispatch(updateClass(newItem))
-            //     return undefined
-            // },
             drop(item: DjangoClassType, monitor) {
                 const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
                 const x = Math.round(item.pos.x + delta.x)
@@ -51,9 +44,7 @@ export default function WorkDesk() {
 
 
     const connections = useMemo(() => {
-        // console.clear()
-        // console.log(djangoFields)
-        return djangoFields.filter(val => val.type === 'ForeignField').map(field => {
+        return djangoFields.filter(val => val.type === 'ForeignKey').map(field => {
             const from_class = djangoClass.find(val => val.class_name === field.parent_class_name)
             if (from_class?.pos && field.dif_y) {
                 const from = {...from_class.pos, y: from_class.pos.y + field.dif_y}
@@ -85,6 +76,9 @@ export default function WorkDesk() {
                 <Button onClick={() => {
                     navigate('class/create')
                 }}>Создать</Button>
+                <Button onClick={() => {
+                    console.log(djangoBuilder(djangoClass, djangoFields))
+                }}>Выгрузить</Button>
             </ButtonGroup>
             <MainDialog title='Класс' open_key={'class'}><DjangoClassForm/></MainDialog>
             <MainDialog title='Поле' open_key={'field'}><ClassFieldsForm/></MainDialog>

@@ -3,7 +3,7 @@ import {useDrag, useDrop,} from 'react-dnd'
 import {Button, Card, CardHeader, IconButton, Stack, TextField} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {ClassFieldsType, DjangoClassType} from "../models/IDjangoModels";
+import {DjangoFieldType, DjangoClassType} from "../models/IDjangoModels";
 import {useForm} from "react-hook-form";
 import {FormTextField} from "./HOC";
 import {addClass, addConnection, changeClassName, deleteClass, updateClass} from "../store/reducers/MainReducer";
@@ -75,15 +75,15 @@ export function DjangoClassCard(props: BoxProps) {
         [djangoClass],
     )
 
-    const [_, drop] = useDrop(
+    const [, drop] = useDrop(
         () => ({
             accept: 'item',
             drop(item: any, monitor) {
                 if (class_name !== item.parent_class_name) {
-                    const newField: ClassFieldsType = {
+                    const newField: DjangoFieldType = {
                         id: djangoFields.length + 1,
                         parent_class_name: class_name,
-                        type: 'ForeignKey',
+                        type: 'key',
                         field_name: `${item.field_name}_set`,
                         field_id: item.id,
                     }

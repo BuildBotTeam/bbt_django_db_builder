@@ -1,10 +1,10 @@
-import React, {cloneElement, useState} from "react";
+import React, {cloneElement} from "react";
 import {TransitionProps} from "@mui/material/transitions";
 import {Box, Dialog, DialogContent, DialogTitle, IconButton, Slide, Typography, useMediaQuery} from "@mui/material";
-import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {Control, Controller} from "react-hook-form";
-import {Autocomplete, MenuItem, Stack, TextField} from "@mui/material";
+import {Autocomplete, MenuItem, TextField} from "@mui/material";
 import 'dayjs/locale/ru'
 
 export const Transition = React.forwardRef(function Transition(
@@ -101,14 +101,6 @@ export function FormTextField(props: FormTextFieldProps) {
     )
 }
 
-type FormDatePickerProps = {
-    fieldName: any,
-    label: string,
-    required?: boolean
-    control: Control,
-    notMinDate?: boolean
-}
-
 type FormAutocompleteSelectProps = {
     fieldName: any
     label: string
@@ -128,7 +120,7 @@ export function FormAutocompleteSelect(props: FormAutocompleteSelectProps) {
             name={fieldName}
             control={control}
             rules={{required: required}}
-            defaultValue={multiple ? defaultValue ?? [] : searchList[0]?.id}
+            defaultValue={multiple ? defaultValue ?? [] : searchList[0]?.id || searchList[0]}
             render={({field: {onChange, value}, fieldState: {invalid}}) => (
                 <Autocomplete
                     {...rest}
@@ -138,11 +130,11 @@ export function FormAutocompleteSelect(props: FormAutocompleteSelectProps) {
                     disableClearable
                     getOptionLabel={(option) => {
                         if (!option) return 'err'
-                        return option.name || searchList.find(val => val.id === option)?.name || ''
+                        return option.name || searchList.find(val => val.id === option)?.name || option || ''
                     }}
                     value={value}
-                    isOptionEqualToValue={(option, val) => option.id === val || option.id === val?.id}
-                    onChange={(_, val) => onChange(val?.id || val.map((v: any) => v.id ?? v) || val)}
+                    isOptionEqualToValue={(option, val) => option.id === val || option.id === val?.id || option === val}
+                    onChange={(_, val) => onChange(val?.id  || val)}
                     renderInput={(params) => (
                         <TextField {...params} label={label} sx={{minWidth: 100, bgcolor: 'white'}}
                                    helperText={invalid && 'Необходимо заполнить'}
