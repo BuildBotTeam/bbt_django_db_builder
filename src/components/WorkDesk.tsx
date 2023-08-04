@@ -11,7 +11,7 @@ import {updateClass} from "../store/reducers/MainReducer";
 import {useNavigate} from "react-router-dom";
 import {MainDialog} from "./HOC";
 import {ClassFieldsForm} from "./CharField";
-import {djangoBuilder, genCharField} from "../services/DjangoBuilder";
+import {djangoBuilder} from "../services/DjangoBuilder";
 
 const styles: CSSProperties = {
     width: '100vw',

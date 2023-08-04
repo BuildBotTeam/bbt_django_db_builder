@@ -1,12 +1,12 @@
 import {Box, Button, IconButton, Stack, Typography} from '@mui/material';
 import React, {useEffect, useMemo, useRef} from 'react';
 import {useDrag} from "react-dnd";
-import {DjangoFieldType, ClassFieldTypeList, DjangoClassType, Point} from "../models/IDjangoModels";
+import {DjangoFieldType, ClassFieldTypes, DjangoClassType, } from "../models/IDjangoModels";
 import {useForm} from "react-hook-form";
 import {addField, deleteField, updateField} from "../store/reducers/MainReducer";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useParams} from "react-router-dom";
-import {FormAutocompleteSelect, FormSelect, FormTextField} from "./HOC";
+import {FormAutocompleteSelect, FormTextField, MainPopover} from "./HOC";
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -34,12 +34,22 @@ export function ClassFieldsForm(props: ClassFieldsFormProps) {
     return <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={1} sx={{pt: 1}}>
             <FormAutocompleteSelect fieldName={'type'} label={'Тип'} control={control}
-                                    searchList={[...ClassFieldTypeList]} required/>
-            <FormTextField fieldName={'field_name'} label={'Название'} control={control} required
+                                    searchList={Object.keys(ClassFieldTypes)} required/>
+            <FormTextField fieldName={'field_name'} label={'field_name'} control={control} required
                            inputProps={{pattern: "[A-Za-z_]*$"}}/>
+            <FormTextField fieldName={'max_length'} label={'max_length'} control={control} required/>
             <Button type={'submit'} variant={'contained'}>Создать</Button>
         </Stack>
     </form>
+}
+
+type CharFieldDetailProps = {
+    field: DjangoFieldType
+}
+
+export function CharFieldDetail({field}: CharFieldDetailProps) {
+    const {class_name, max_length, on_delete, blank, tnull,tdefault,} = field
+    return <div></div>
 }
 
 type ClassFieldProps = {
@@ -49,19 +59,7 @@ type ClassFieldProps = {
 
 export default function ClassField(props: ClassFieldProps) {
     const {field, parentClass} = props
-    const {
-        id,
-        type,
-        class_name,
-        field_name,
-        related_name,
-        key_id,
-        dif_y,
-        on_delete,
-        tnull,
-        blank,
-        parent_class_name
-    } = field
+    const {type, field_name, key_id, dif_y,} = field
     const {djangoFields, djangoClass} = useAppSelector(state => state.mainReducer)
     const dispatch = useAppDispatch()
     const refBody = useRef<HTMLDivElement | null>(null)
@@ -83,7 +81,7 @@ export default function ClassField(props: ClassFieldProps) {
 
     const connect = useMemo(() => {
         if (type === 'ForeignKey') {
-            return <div ref={drag} style={{cursor: 'grab'}}>
+            return <div ref={drag} style={{cursor: 'grab', position: 'absolute', right: -10, paddingTop: 2}}>
                 {key_id ? <RadioButtonCheckedIcon sx={{fontSize: 16}}/> :
                     <RadioButtonUncheckedIcon sx={{fontSize: 16}}/>}
             </div>
@@ -99,9 +97,7 @@ export default function ClassField(props: ClassFieldProps) {
             </IconButton></Box>
             <Typography>{field_name}</Typography>
         </Stack>
-        <Stack direction={'row'}>
-            <Typography variant={"caption"}>{type}</Typography>
-            {connect}
-        </Stack>
+        <MainPopover name={type}><Typography>sadasdas</Typography></MainPopover>
+        {connect}
     </Box>
 }

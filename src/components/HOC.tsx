@@ -1,11 +1,23 @@
-import React, {cloneElement} from "react";
+import React, {cloneElement, useState} from "react";
 import {TransitionProps} from "@mui/material/transitions";
-import {Box, Dialog, DialogContent, DialogTitle, IconButton, Slide, Typography, useMediaQuery} from "@mui/material";
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    IconButton, Popover,
+    Slide,
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 import {useLocation, useNavigate} from "react-router-dom";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {Control, Controller} from "react-hook-form";
 import {Autocomplete, MenuItem, TextField} from "@mui/material";
 import 'dayjs/locale/ru'
+import {DjangoFieldType} from "../models/IDjangoModels";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 export const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -134,7 +146,7 @@ export function FormAutocompleteSelect(props: FormAutocompleteSelectProps) {
                     }}
                     value={value}
                     isOptionEqualToValue={(option, val) => option.id === val || option.id === val?.id || option === val}
-                    onChange={(_, val) => onChange(val?.id  || val)}
+                    onChange={(_, val) => onChange(val?.id || val)}
                     renderInput={(params) => (
                         <TextField {...params} label={label} sx={{minWidth: 100, bgcolor: 'white'}}
                                    helperText={invalid && 'Необходимо заполнить'}
@@ -173,4 +185,50 @@ export function FormSelect(props: FormSelectProps) {
                                                  value={val.id || val}>{val.name || val}</MenuItem>)}
             </TextField>)}
     />
+}
+
+type MainPopoverProps = {
+    name: string
+    children: React.ReactElement
+}
+
+export function MainPopover({name, children}: MainPopoverProps) {
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    return (
+        <div>
+            <Button variant="text" endIcon={<ArrowForwardIosIcon sx={{fontSize: 15, mt: '5px'}}/>}
+                    sx={{p: 0, minWidth: 0, textTransform: 'none'}}
+                    onClick={handleClick}>
+                {name}
+            </Button>
+            <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'center',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'center',
+                    horizontal: 'left',
+                }}
+            >
+                {children}
+            </Popover>
+        </div>
+    );
 }

@@ -39,18 +39,18 @@ export function DjangoClassForm(props: DjangoClassFormProps) {
     </form>
 }
 
-
-export interface BoxProps {
+export interface DjangoClassCardProps {
     djangoClass: DjangoClassType
 }
 
-export function DjangoClassCard(props: BoxProps) {
+export function DjangoClassCard(props: DjangoClassCardProps) {
     const {djangoClass} = props
     const {class_name, pos, color} = djangoClass
     const dispatch = useAppDispatch()
     const {djangoFields} = useAppSelector(state => state.mainReducer)
     const navigate = useNavigate()
     const [headEdit, setHeadEdit] = useState(false)
+    const [anchor, setAnchor] = useState()
 
     const {ref} = useResizeObserver<HTMLDivElement>({
         onResize: ({width, height}) => {
