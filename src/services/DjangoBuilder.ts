@@ -9,9 +9,12 @@ class ${class_name}(models.Model):
     class Meta:
         oredering = '-pk'\n`
         prev += dFieldList.reduce((prev, cur) => {
-            const props = getFieldPropsByType(cur)
-            const field = `\n    ${cur.field_name} = models.${cur.type}(${props})`
-            return prev + field
+            if (class_name === cur.class_name) {
+                const props = getFieldPropsByType(cur)
+                const field = `\n    ${cur.field_name} = models.${cur.type}(${props})`
+                return prev + field
+            }
+            return ''
         }, '')
         return prev
     }, '')
@@ -20,12 +23,13 @@ class ${class_name}(models.Model):
 }
 
 export function getFieldPropsByType(field: DjangoFieldType): string[] {
-    return ClassFieldTypes[field.type].filter(v => !!field[v.name]).map<string>((val, i) => getFieldString(val.name, field[val.name], i))
+    return ClassFieldTypes[field.type].map<string>(val => getFieldString(val.name, field[val.name])).filter(v => v)
 }
 
-export function getFieldString(name:string, val: any, index: number): string {
+export function getFieldString(name: string, val: any): string {
+    if (!val) return ''
     if (name === 'class_name') return `${name}='${val}'`
-    return index === 0 ? `${name}=${val}` : `, ${name}=${val}`
+    return `${name}=${val}`
 }
 
 
