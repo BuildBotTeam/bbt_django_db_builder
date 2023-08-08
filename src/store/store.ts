@@ -1,16 +1,11 @@
 import {AnyAction, combineReducers, configureStore} from "@reduxjs/toolkit";
-import authReducer from './reducers/AuthReducer'
 import mainReducer from './reducers/MainReducer'
 
 const rootReducer = combineReducers({
-    authReducer,
     mainReducer
 })
 
 const reducerProxy = (state: any, action: AnyAction) => {
-    if (action.type === 'logout/fulfilled') {
-        return rootReducer(undefined, action);
-    }
     return rootReducer(state, action);
 }
 

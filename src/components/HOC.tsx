@@ -5,9 +5,9 @@ import {
     Button,
     Dialog,
     DialogContent,
-    DialogTitle,
+    DialogTitle, FormControlLabel,
     IconButton, Popover,
-    Slide,
+    Slide, Switch,
     Typography,
     useMediaQuery
 } from "@mui/material";
@@ -16,7 +16,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {Control, Controller} from "react-hook-form";
 import {Autocomplete, MenuItem, TextField} from "@mui/material";
 import 'dayjs/locale/ru'
-import {DjangoFieldType} from "../models/IDjangoModels";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 export const Transition = React.forwardRef(function Transition(
@@ -187,6 +186,33 @@ export function FormSelect(props: FormSelectProps) {
     />
 }
 
+type FormSwitchProps = {
+    fieldName: any
+    label: string
+    control: Control
+    required?: boolean
+    [rest: string]: any
+}
+
+export function FormSwitch(props: FormSwitchProps) {
+    const {fieldName, label, control, required, ...rest} = props
+
+    return <Controller
+        name={fieldName}
+        control={control}
+        rules={{required: required}}
+        defaultValue={false}
+        render={({field: {onChange, value}}) => (
+            <FormControlLabel
+                {...rest}
+                control={<Switch color="primary" checked={value} onChange={onChange}/>}
+                label={label}
+                labelPlacement="start"
+            />
+        )}
+    />
+}
+
 type MainPopoverProps = {
     name: string
     children: React.ReactElement
@@ -207,10 +233,9 @@ export function MainPopover({name, children}: MainPopoverProps) {
     const id = open ? 'simple-popover' : undefined;
 
     return (
-        <div>
-            <Button variant="text" endIcon={<ArrowForwardIosIcon sx={{fontSize: 15, mt: '5px'}}/>}
-                    sx={{p: 0, minWidth: 0, textTransform: 'none'}}
-                    onClick={handleClick}>
+        <React.Fragment>
+            <Button variant="text" endIcon={<ArrowForwardIosIcon/>} sx={{p: 0, minWidth: 0, textTransform: 'none',}}
+                    size={'small'} onClick={handleClick}>
                 {name}
             </Button>
             <Popover
@@ -229,6 +254,6 @@ export function MainPopover({name, children}: MainPopoverProps) {
             >
                 {children}
             </Popover>
-        </div>
+        </React.Fragment>
     );
 }

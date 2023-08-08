@@ -86,7 +86,7 @@ export const mainSlice = createSlice({
                 state.djangoFields = [...state.djangoFields, key]
             }
             state.djangoFields = state.djangoFields.map(val => {
-                if (val.id === field.id) return {...field, class_name: key.class_name, key_id: key.id}
+                if (val.id === field.id) return {...field, class_name: key.parent_class_name, key_id: key.id}
                 return val
             })
 

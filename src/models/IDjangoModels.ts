@@ -25,55 +25,64 @@ export type DjangoClassType = {
     color: string
 }
 
+export const onDeleteList = ['CASCADE', 'PROTECTED', 'SET_NULL']
+
+type ClassFieldPropsType = {
+    name: string
+    required: boolean
+    type: string
+    list?: string[]
+}
+
 export const ClassFieldTypes = {
     CharField: [
-        {name: 'max_length', required: true, type: 'string'},
+        {name: 'max_length', required: true, type: 'number'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'default', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},
-    ],
+    ] as ClassFieldPropsType[],
     TextField: [
-        {name: 'max_length', required: false, type: 'string'},
+        {name: 'max_length', required: false, type: 'number'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'default', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},
-    ],
+    ] as ClassFieldPropsType[],
     ForeignKey: [
-        {name: 'class_name', required: true, type: 'string'},
-        {name: 'on_delete', required: true, type: 'select'},
-        {name: 'related_name', required: false, type: 'select'},
+        {name: 'class_name', required: true, type: 'late'},
+        {name: 'on_delete', required: true, type: 'select', list: onDeleteList},
+        {name: 'related_name', required: false, type: 'string'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},
-    ],
+    ]as ClassFieldPropsType[],
     ManyToManyField: [
-        {name: 'class_name', required: true, type: 'string'},
-        {name: 'related_name', required: false, type: 'select'},
+        {name: 'class_name', required: true, type: 'late'},
+        {name: 'related_name', required: false, type: 'string'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'null', required: false, type: 'bool'},
-    ],
+    ] as ClassFieldPropsType[],
     OneToOneField: [
-        {name: 'class_name', required: true, type: 'string'},
-        {name: 'on_delete', required: true, type: 'select'},
-        {name: 'related_name', required: false, type: 'select'},
+        {name: 'class_name', required: true, type: 'late'},
+        {name: 'on_delete', required: true, type: 'select', list: onDeleteList},
+        {name: 'related_name', required: false, type: 'string'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},
-    ],
+    ] as ClassFieldPropsType[],
     IntegerField: [
-        {name: 'default', required: true, type: 'string'},
+        {name: 'default', required: true, type: 'number'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},
-    ],
+    ] as ClassFieldPropsType[],
     FloatField: [
-        {name: 'default', required: true, type: 'string'},
+        {name: 'default', required: true, type: 'number'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},
-    ],
+    ] as ClassFieldPropsType[],
     // FileField: [
     //     {name: 'max_length', required: false, type: 'string'},
     //     {name: 'verbose_name', required: false, type: 'string'},
@@ -105,12 +114,12 @@ export const ClassFieldTypes = {
     //     {name: 'related_name', required: false, type: 'select'},
     // ],
     BooleanField: [
-        {name: 'default', required: true, type: 'string'},
+        {name: 'default', required: true, type: 'bool'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},
-    ],
-    key: [],
+    ] as ClassFieldPropsType[],
+    key: [] as ClassFieldPropsType[],
 }
 
 export type DjangoFieldType = {

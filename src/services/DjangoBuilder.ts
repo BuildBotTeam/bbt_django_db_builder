@@ -9,7 +9,7 @@ class ${class_name}(models.Model):
     class Meta:
         oredering = '-pk'\n`
         prev += dFieldList.reduce((prev, cur) => {
-            const props = ClassFieldTypes[cur.type].map<string>((val, i) => getFieldString(val.name, cur[val.name], i)).filter(v => v)
+            const props = getFieldPropsByType(cur)
             const field = `\n    ${cur.field_name} = models.${cur.type}(${props})`
             return prev + field
         }, '')
@@ -19,8 +19,13 @@ class ${class_name}(models.Model):
     return head + body
 }
 
-function getFieldString(name:string, val: any, index: number): string {
-    return val ? index === 0 ? `${name}=${val}` : `, ${name}=${val}` : ''
+export function getFieldPropsByType(field: DjangoFieldType): string[] {
+    return ClassFieldTypes[field.type].filter(v => !!field[v.name]).map<string>((val, i) => getFieldString(val.name, field[val.name], i))
+}
+
+export function getFieldString(name:string, val: any, index: number): string {
+    if (name === 'class_name') return `${name}='${val}'`
+    return index === 0 ? `${name}=${val}` : `, ${name}=${val}`
 }
 
 

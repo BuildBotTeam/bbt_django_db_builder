@@ -1,15 +1,11 @@
 import React, {useEffect, ReactElement, useMemo} from 'react';
 import './App.scss';
 import {Navigate, Route, Routes, useLocation} from "react-router-dom";
-import {checkToken, logout} from "./store/actions/auth";
-import {useAppDispatch, useAppSelector} from "./hooks";
 import {
-    Box, CircularProgress,
     createTheme,
     CssBaseline,
     ThemeProvider
 } from '@mui/material';
-import {useSnackbar} from "notistack";
 import WorkDesk from "./components/WorkDesk";
 import HomePage from "./components/HomePage";
 
@@ -79,7 +75,7 @@ export var defaultNavList: NavItemType[] = [
                 name: 'field',
                 icon: <div/>,
                 start_path: 'field',
-                path: '/:class_name/create?/:field_name?/edit?',
+                path: '/:class_name/create?/:field_id?/edit?',
                 validate: '',
                 component: <WorkDesk/>
             },
