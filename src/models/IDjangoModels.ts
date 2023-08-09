@@ -72,13 +72,13 @@ export const ClassFieldTypes = {
         {name: 'null', required: false, type: 'bool'},
     ] as ClassFieldPropsType[],
     IntegerField: [
-        {name: 'default', required: true, type: 'number'},
+        {name: 'default', required: false, type: 'number'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},
     ] as ClassFieldPropsType[],
     FloatField: [
-        {name: 'default', required: true, type: 'number'},
+        {name: 'default', required: false, type: 'number'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},
         {name: 'null', required: false, type: 'bool'},

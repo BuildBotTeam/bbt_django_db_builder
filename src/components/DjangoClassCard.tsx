@@ -33,7 +33,7 @@ export function DjangoClassForm(props: DjangoClassFormProps) {
 
     return <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={1} sx={{pt: 1, pm: 1}}>
-            <FormTextField fieldName={'class_name'} label={'Название'} control={control} required/>
+            <FormTextField fieldName={'class_name'} label={'Название'} control={control} required inputProps={{pattern: "[A-Za-z]*$"}}/>
             <Button type={'submit'} variant={'contained'}>Создать</Button>
         </Stack>
     </form>
@@ -50,7 +50,6 @@ export function DjangoClassCard(props: DjangoClassCardProps) {
     const {djangoFields} = useAppSelector(state => state.mainReducer)
     const navigate = useNavigate()
     const [headEdit, setHeadEdit] = useState(false)
-    const [anchor, setAnchor] = useState()
 
     const {ref} = useResizeObserver<HTMLDivElement>({
         onResize: ({width, height}) => {
@@ -84,7 +83,7 @@ export function DjangoClassCard(props: DjangoClassCardProps) {
                         id: djangoFields.length + 1,
                         parent_class_name: class_name,
                         type: 'key',
-                        field_name: `${item.field_name}_set`,
+                        field_name: item.related_name || `${item.field_name}_set`,
                         field_id: item.id,
                     }
                     dispatch(addConnection({field: item, key:newField}))
@@ -108,7 +107,7 @@ export function DjangoClassCard(props: DjangoClassCardProps) {
                         <CardHeader
                             titleTypographyProps={{variant: 'h6'}}
                             onDoubleClick={() => setHeadEdit(true)}
-                            action={<IconButton size={'small'}
+                            action={<IconButton size={'small'} color={'error'}
                                                 onClick={() => dispatch(deleteClass(class_name))}>
                                 <DeleteIcon/>
                             </IconButton>}

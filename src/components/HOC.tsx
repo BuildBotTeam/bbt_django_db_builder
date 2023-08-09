@@ -7,7 +7,7 @@ import {
     DialogContent,
     DialogTitle, FormControlLabel,
     IconButton, Popover,
-    Slide, Switch,
+    Slide, styled, Switch, Tooltip, tooltipClasses, TooltipProps,
     Typography,
     useMediaQuery
 } from "@mui/material";
@@ -257,3 +257,11 @@ export function MainPopover({name, children}: MainPopoverProps) {
         </React.Fragment>
     );
 }
+
+export const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 'none',
+  },
+});

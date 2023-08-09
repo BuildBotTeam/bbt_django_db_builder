@@ -1,4 +1,5 @@
 import {Point} from "./models/IDjangoModels";
+import FileSaver from "file-saver";
 
 function distance(start: Point, end: Point) {
     const dx = start.x - end.x
@@ -28,7 +29,6 @@ export function calculatePath(in_start: Point, in_end: Point) {
     }
 
 
-
     if (start.x + start.width < end.x) {
         start.x += start.width
         center.x += start.width / 2
@@ -51,6 +51,11 @@ export function calculatePath(in_start: Point, in_end: Point) {
     `;
 }
 
-export function capFirstLetter(str: string){
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+export function capFirstLetter(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function download(data: string, filename: string) {
+    const file = new Blob([data], {type: 'text/plain'})
+    FileSaver.saveAs(file, filename);
+}

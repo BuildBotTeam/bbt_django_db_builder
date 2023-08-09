@@ -1,4 +1,4 @@
-import {Box, Button, IconButton, Stack, Tooltip, Typography} from '@mui/material';
+import {Box, Button, IconButton, Stack, Typography, Zoom} from '@mui/material';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useDrag} from "react-dnd";
 import {DjangoFieldType, ClassFieldTypes, DjangoClassType,} from "../models/IDjangoModels";
@@ -6,12 +6,12 @@ import {useForm} from "react-hook-form";
 import {addField, deleteField, updateField} from "../store/reducers/MainReducer";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useNavigate, useParams} from "react-router-dom";
-import {FormAutocompleteSelect, FormSelect, FormSwitch, FormTextField, MainPopover} from "./HOC";
+import {FormAutocompleteSelect, FormSelect, FormSwitch, FormTextField, NoMaxWidthTooltip} from "./HOC";
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
-import {getFieldPropsByType, getFieldString} from "../services/DjangoBuilder";
+import {getFieldPropsByType} from "../services/DjangoBuilder";
 
 
 type ClassFieldsFormProps = {
@@ -36,9 +36,10 @@ export function ClassFieldsForm(props: ClassFieldsFormProps) {
 
     function onSubmit(values: any) {
         values.parent_class_name = class_name
-        values.id = djangoFields.length + 1
+        values.id = Number(field_id) || djangoFields.length + 1
         values.field_name = values.field_name.toLowerCase()
-        dispatch(addField(values))
+        if (field_id) dispatch(updateField(values))
+        else dispatch(addField(values))
         handleClose!()
     }
 
@@ -78,7 +79,7 @@ export function ClassFieldsForm(props: ClassFieldsFormProps) {
             <FormTextField fieldName={'field_name'} label={'field_name'} control={control} required
                            inputProps={{pattern: "[A-Za-z_]*$"}}/>
             {formBuilder}
-            <Button type={'submit'} variant={'contained'}>Создать</Button>
+            <Button type={'submit'} variant={'contained'}>{field_id ? 'Изменить' : 'Создать'}</Button>
         </Stack>
     </form>
 }
@@ -125,15 +126,15 @@ export default function ClassField(props: ClassFieldProps) {
     const tooltipContent = useMemo(() => {
         if (field.type === 'key') return null
         return <Box sx={{display: 'flex'}}>
-            <Typography variant={"caption"}>({getFieldPropsByType(field).map(v => v)})</Typography>
+            <Typography variant={"body2"}>({getFieldPropsByType(field).map(v => v).join(', ')})</Typography>
         </Box>
     }, [field])
 
-    return <Tooltip title={tooltipContent} placement="bottom">
+    return <NoMaxWidthTooltip TransitionComponent={Zoom} title={tooltipContent} placement="bottom" arrow disableInteractive>
         <Box sx={{display: 'flex', gap: 5, justifyContent: 'space-between', alignItems: 'center'}} ref={refBody}>
             <Stack direction={'row'}>
                 <Stack direction={'row'}>
-                    <IconButton size={'small'} onClick={() => dispatch(deleteField(field))}>
+                    <IconButton size={'small'} color={'error'} onClick={() => dispatch(deleteField(field))}>
                         <ClearIcon sx={{fontSize: 16}}/>
                     </IconButton>
                     <IconButton size={'small'}
@@ -146,5 +147,6 @@ export default function ClassField(props: ClassFieldProps) {
             {<Typography>{type}</Typography>}
             {connect}
         </Box>
-    </Tooltip>
+    </NoMaxWidthTooltip>
+
 }

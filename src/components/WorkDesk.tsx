@@ -11,7 +11,7 @@ import {updateClass} from "../store/reducers/MainReducer";
 import {useNavigate} from "react-router-dom";
 import {MainDialog} from "./HOC";
 import {ClassFieldsForm} from "./CharField";
-import {djangoBuilder} from "../services/DjangoBuilder";
+import projectBuilder from "../services/DjangoBuilder";
 
 const styles: CSSProperties = {
     width: '100vw',
@@ -77,7 +77,10 @@ export default function WorkDesk() {
                     navigate('class/create')
                 }}>Создать</Button>
                 <Button onClick={() => {
-                    console.log(djangoBuilder(djangoClass, djangoFields))
+                    projectBuilder(djangoClass, djangoFields)
+                    // console.log(djangoFields)
+                    // console.log(modelsBuilder(djangoClass, djangoFields))
+                    // download(modelsBuilder(djangoClass, djangoFields), 'models.py')
                 }}>Выгрузить</Button>
             </ButtonGroup>
             <MainDialog title='Класс' open_key={'class'}><DjangoClassForm/></MainDialog>
