@@ -43,7 +43,6 @@ export const ClassFieldTypes = {
         {name: 'null', required: false, type: 'bool'},
     ] as ClassFieldPropsType[],
     TextField: [
-        {name: 'max_length', required: false, type: 'number'},
         {name: 'verbose_name', required: false, type: 'string'},
         {name: 'default', required: false, type: 'string'},
         {name: 'blank', required: false, type: 'bool'},

@@ -1,13 +1,19 @@
 import {ClassFieldTypes, DjangoClassType, DjangoFieldType} from "../models/IDjangoModels";
 import FileSaver from "file-saver";
 import JSZip from "jszip";
+import {capFirstLetter} from "../utils";
+
+const testAppName = 'TestApp'
 
 export default function projectBuilder(dClassList: DjangoClassType[], dFieldList: DjangoFieldType[]) {
+    const app_name = testAppName.split(/(?=[A-Z])/).map(v => v.toLowerCase()).join('_')
+
     const models = new Blob([modelsBuilder(dClassList, dFieldList)], {type: 'text/plain'})
     const admin = new Blob([adminBuilder(dClassList)], {type: 'text/plain'})
-    const serializer = new Blob([serializerBuilder(dClassList, dFieldList)], {type: 'text/plain'})
+    const serializers = new Blob([serializerBuilder(dClassList, dFieldList)], {type: 'text/plain'})
     const views = new Blob([viewSetBuilder(dClassList)], {type: 'text/plain'})
     const urls = new Blob([urlsBuilder(dClassList)], {type: 'text/plain'})
+    const app = new Blob([appBuilder(testAppName, app_name)], {type: 'text/plain'})
 
     // console.log(modelsBuilder(dClassList, dFieldList))
     // console.log(adminBuilder(dClassList))
@@ -16,11 +22,15 @@ export default function projectBuilder(dClassList: DjangoClassType[], dFieldList
     // console.log(urlsBuilder(dClassList))
 
     const zip = new JSZip();
-    zip!.file('models.py', models)
-    zip!.file('admin.py', admin)
-    zip!.file('serializer.py', serializer)
-    zip!.file('views.py', views)
-    zip!.file('urls.py', urls)
+    const app_folder = zip.folder(app_name)
+    app_folder!.file('__init__.py', new Blob([], {type: 'text/plain'}))
+    app_folder!.file('models.py', models)
+    app_folder!.file('admin.py', admin)
+    app_folder!.file('serializers.py', serializers)
+    app_folder!.file('views.py', views)
+    app_folder!.file('urls.py', urls)
+    app_folder!.file('apps.py', app)
+    // app_folder!.file('filters.py', app)
     zip.generateAsync({type: "blob"}).then(function (content) {
         FileSaver.saveAs(content, "example.zip");
     });
@@ -114,4 +124,13 @@ router = routers.DefaultRouter()\n`
         return prev + `\nrouter.register('${name}', views.${cur.class_name}ViewSet, '${name}')`
     }, '')
     return head + body + '\n'
+}
+
+export function appBuilder(app_name: string, app_name_lower: string) {
+    return `from django.apps import AppConfig
+
+
+class ${capFirstLetter(app_name)}Config(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = '${app_name_lower}'`
 }
